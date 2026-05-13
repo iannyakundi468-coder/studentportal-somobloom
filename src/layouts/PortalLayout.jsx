@@ -39,10 +39,11 @@ export default function PortalLayout({ role }) {
     <div className="flex h-screen bg-white text-slate-900 font-sans overflow-hidden">
       {!isTeacher && <GlobalAiAssistant />}
       
-      {/* Sidebar */}
+      {/* Sidebar - Hidden on mobile for students */}
       <aside className={`
         fixed inset-y-0 left-0 z-50 w-64 bg-white text-slate-600 border-r border-slate-200 transform transition-transform duration-200 ease-in-out md:relative md:translate-x-0
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+        ${!isTeacher && 'hidden md:flex'} 
       `}>
         <div className="h-full flex flex-col">
           {/* Brand */}
@@ -104,10 +105,23 @@ export default function PortalLayout({ role }) {
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-slate-50/30">
         
         {/* Top Navbar */}
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 z-30">
-          <button onClick={() => setIsSidebarOpen(true)} className="md:hidden p-2 text-slate-500">
-            <Menu size={20} />
-          </button>
+        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 z-30">
+          
+          {/* Mobile Left Section */}
+          <div className="flex items-center gap-2 md:hidden">
+            {isTeacher ? (
+              <button onClick={() => setIsSidebarOpen(true)} className="p-2 -ml-2 text-slate-500">
+                <Menu size={20} />
+              </button>
+            ) : (
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-yellow-400 rounded flex items-center justify-center shadow-sm">
+                  <GraduationCap size={20} className="text-slate-900" />
+                </div>
+                <span className="font-bold text-slate-900 tracking-tight">Somobloom</span>
+              </div>
+            )}
+          </div>
           
           <div className="hidden md:flex items-center gap-2 text-sm text-slate-500 font-medium">
             <span>Portal</span>
@@ -115,7 +129,7 @@ export default function PortalLayout({ role }) {
             <span className="text-slate-900">{isTeacher ? 'Teacher' : 'Student'}</span>
           </div>
 
-          <div className="flex items-center gap-4 relative">
+          <div className="flex items-center gap-3 md:gap-4 relative">
             <button 
               onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
               className="p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors relative"
@@ -158,20 +172,41 @@ export default function PortalLayout({ role }) {
         </header>
 
         {/* Scrollable Content */}
-        <main className="flex-1 overflow-auto p-6 md:p-8">
-          <div className="max-w-6xl mx-auto">
+        <main className={`flex-1 overflow-auto p-4 md:p-8 ${!isTeacher ? 'pb-24 md:pb-8' : ''}`}>
+          <div className="max-w-6xl mx-auto h-full">
             <ErrorBoundary>
               <Outlet />
             </ErrorBoundary>
           </div>
         </main>
 
-        {/* Mobile Sidebar Overlay */}
-        {isSidebarOpen && (
+        {/* Mobile Sidebar Overlay (Teacher Only) */}
+        {isSidebarOpen && isTeacher && (
           <div 
             className="fixed inset-0 bg-slate-900/50 z-40 md:hidden"
             onClick={() => setIsSidebarOpen(false)}
           />
+        )}
+
+        {/* Bottom Navigation (Student Only) */}
+        {!isTeacher && (
+          <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 flex justify-around items-center pb-safe">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.to === '/student'}
+                className={({ isActive }) =>
+                  `flex flex-col items-center justify-center py-3 px-2 flex-1 transition-colors ${
+                    isActive ? 'text-blue-600' : 'text-slate-400 hover:text-slate-900'
+                  }`
+                }
+              >
+                <item.icon size={20} className={`mb-1 ${({isActive}) => isActive ? 'text-blue-600' : ''}`} />
+                <span className="text-[10px] font-medium">{item.label}</span>
+              </NavLink>
+            ))}
+          </nav>
         )}
       </div>
     </div>
