@@ -22,6 +22,7 @@ export function StudentProvider({ children }) {
   const isAuthenticated = !!token;
 
   const fetchStudentData = async () => {
+<<<<<<< HEAD
     const activeToken = localStorage.getItem('somobloom_token');
     if (!activeToken) return;
 
@@ -33,6 +34,9 @@ export function StudentProvider({ children }) {
       return;
     }
 
+=======
+    if (!token) return;
+>>>>>>> 53e9fd7 (feat: replace mock data with real API integration in StudentContext)
     setIsLoading(true);
     try {
       // Fetch profile
@@ -75,6 +79,7 @@ export function StudentProvider({ children }) {
     }
   }, [isAuthenticated]);
 
+<<<<<<< HEAD
   const login = async (emailOrProfile, password) => {
     if (typeof emailOrProfile === 'object' && emailOrProfile !== null) {
       // Mock Login Mode
@@ -109,6 +114,30 @@ export function StudentProvider({ children }) {
         setIsLoading(false);
       }
     }
+=======
+<<<<<<< HEAD
+  // Called from the login/onboarding page
+  const login = (profileData) => {
+    const newStudent = {
+      ...DEFAULT_PORTAL_DATA,
+      id: 'STU-' + Math.floor(1000 + Math.random() * 9000),
+      name: profileData.name || 'Student Name',
+      email: profileData.email,
+      phone: profileData.phone || '',
+      grade: profileData.grade || '10th Grade',
+      interests: profileData.interests || '',
+      school: profileData.school || 'Somobloom High',
+      avatarUrl: null,
+      aiStudyEnabled: false,
+    };
+    setStudentData(newStudent);
+    setIsAuthenticated(true);
+=======
+  const login = async (email, password) => {
+    // Auth logic is handled in AuthContext, but if this context needs to react:
+    await fetchStudentData();
+>>>>>>> 2bb18e1 (feat: replace mock data with real API integration in StudentContext)
+>>>>>>> 53e9fd7 (feat: replace mock data with real API integration in StudentContext)
   };
 
   const logout = () => {
