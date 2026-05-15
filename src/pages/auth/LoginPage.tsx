@@ -16,16 +16,22 @@ export const LoginPage = () => {
     const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
-        // Mock login delay or API call
-        setTimeout(async () => {
-            await login(email || 'test@stjosephskisii.ac.ke', role);
-            setIsLoading(false);
+        setError('');
+        
+        try {
+            await login(email, password, role);
             navigate('/dashboard');
-        }, 1500);
+        } catch (err: any) {
+            setError(err.message || 'Failed to login');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -79,11 +85,19 @@ export const LoginPage = () => {
                         />
                     )}
 
+                    {error && (
+                        <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/50 text-red-400 text-sm">
+                            {error}
+                        </div>
+                    )}
+
                     <Input
                         label="Password"
                         type="password"
                         placeholder="••••••••"
                         icon={<Lock className="w-4 h-4" />}
+                        value={password}
+                        onChange={(e: any) => setPassword(e.target.value)}
                     />
 
                     <div className="flex justify-between items-center text-sm">

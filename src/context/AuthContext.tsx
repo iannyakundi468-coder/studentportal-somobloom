@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, type ReactNode } from 'react';
+import { api } from '../lib/api';
 
 type Role = 'guardian' | 'staff' | 'admin';
 
@@ -10,7 +11,7 @@ interface User {
 
 interface AuthContextType {
     user: User | null;
-    login: (email: string, role: Role) => Promise<void>;
+    login: (email: string, password: string, role: Role) => Promise<void>;
     logout: () => void;
     isAuthenticated: boolean;
 }
@@ -20,44 +21,33 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
 
-    const login = async (email: string, role: Role) => {
+    const login = async (email: string, password: string, role: Role) => {
         try {
-            // Attempt to login via API
-            const res = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password: 'placeholder_password' }) // Password handling to be added in UI
-            });
-
-            if (res.ok) {
-                const data = await res.json();
-                setUser(data.user);
-                localStorage.setItem('st_josephs_user', JSON.stringify(data.user));
-                return;
-            }
-        } catch (error) {
-            console.warn("Backend not reachable, functioning in Offline/Mock mode.");
+            // We pass the role to the backend to ensure the user is logging into the correct portal context
+            const data = await api.post<{ token: string; user: User }>('/auth/login', { email, password, role });
+            
+            setUser(data.user);
+            localStorage.setItem('somobloom_token', data.token);
+            localStorage.setItem('somobloom_user', JSON.stringify(data.user));
+        } catch (error: any) {
+            console.error("Login failed:", error.message);
+            throw error;
         }
-
-        // Fallback to Mock Data if API fails (for local manual testing without backend)
-        const mockUser: User = {
-            name: role === 'guardian' ? 'Ian Manyara' : role === 'staff' ? 'Mrs. Alice' : 'Joseph',
-            role: role,
-            id: Math.random().toString(36).substr(2, 9),
-        };
-        setUser(mockUser);
-        localStorage.setItem('st_josephs_user', JSON.stringify(mockUser));
     };
 
     const logout = () => {
         setUser(null);
-        localStorage.removeItem('st_josephs_user');
+        localStorage.removeItem('somobloom_token');
+        localStorage.removeItem('somobloom_user');
     };
 
     // Load user from local storage
     React.useEffect(() => {
-        const stored = localStorage.getItem('st_josephs_user');
-        if (stored) setUser(JSON.parse(stored));
+        const storedUser = localStorage.getItem('somobloom_user');
+        const token = localStorage.getItem('somobloom_token');
+        if (storedUser && token) {
+            setUser(JSON.parse(storedUser));
+        }
     }, []);
 
     return (
