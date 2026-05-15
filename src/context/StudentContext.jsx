@@ -1,79 +1,79 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { api } from '../lib/api';
 
 const StudentContext = createContext(null);
 
-// Default mock data for courses, tasks, portfolio (teacher-provided, not student-entered)
-const DEFAULT_PORTAL_DATA = {
-  id: 'STU-' + Math.floor(1000 + Math.random() * 9000),
-  xp: 2450,
-  courses: [
-    { id: 1, title: 'Advanced Mathematics', teacher: 'Mr. Smith', progress: 85 },
-    { id: 2, title: 'World History', teacher: 'Mrs. Davis', progress: 92 },
-    { id: 3, title: 'Physics 101', teacher: 'Dr. Brown', progress: 78 },
-    { id: 4, title: 'Literature', teacher: 'Ms. Wilson', progress: 100 },
-  ],
-  tasks: [
-    { id: 101, title: 'Math Assignment 4', dueDate: 'Today', completed: false, course: 'Advanced Mathematics' },
-    { id: 102, title: 'Read Chapter 5', dueDate: 'Tomorrow', completed: false, course: 'World History' },
-    { id: 103, title: 'Physics Lab Report', dueDate: 'Friday', completed: false, course: 'Physics 101' },
-    { id: 104, title: 'Essay Draft', dueDate: 'Next Monday', completed: true, course: 'Literature' },
-  ],
-  portfolio: [
-    { id: 201, title: 'Science Fair Project: Solar Ovens', date: 'Oct 15, 2025', course: 'Physics 101', type: 'Project', tags: ['Science', 'Practical'], imageUrl: null, description: 'Built a working solar oven using recycled materials that successfully boiled water.' },
-    { id: 202, title: 'Historical Essay: The Renaissance', date: 'Nov 02, 2025', course: 'World History', type: 'Essay', tags: ['History', 'Writing'], imageUrl: null, description: 'A 10-page research paper exploring the economic factors that drove the Renaissance.' },
-    { id: 203, title: 'Calculus Final Exam', date: 'Dec 10, 2025', course: 'Advanced Mathematics', type: 'Exam', tags: ['Math', 'Test'], imageUrl: null, description: 'Scored 98% on the final exam covering integrals and derivatives.' },
-  ],
-  marks: {
-    rats: [85, 92, 88],
-    cats: [90, 85, 95]
-  },
-  attendance: {
-    present: 42,
-    total: 45
-  },
+// Keeping some mock structure for UI compatibility but will populate with real data
+const INITIAL_UI_STATE = {
+  courses: [],
+  tasks: [],
+  portfolio: [],
+  marks: { rats: [], cats: [] },
+  attendance: { present: 0, total: 0 },
   aiStudyEnabled: false
 };
 
 export function StudentProvider({ children }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return localStorage.getItem('studentAuthenticated') === 'true';
-  });
-  const [studentData, setStudentData] = useState(() => {
-    const saved = localStorage.getItem('studentData');
-    return saved ? JSON.parse(saved) : null;
-  });
+  const [studentData, setStudentData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const token = localStorage.getItem('somobloom_token');
+  const isAuthenticated = !!token;
+
+  const fetchStudentData = async () => {
+    if (!token) return;
+    setIsLoading(true);
+    try {
+      // Fetch profile
+      const { profile } = await api.get('/student/me');
+      
+      // Fetch classes
+      const { classes } = await api.get('/student/classes');
+      
+      // Fetch grades
+      const { grades } = await api.get('/student/grades');
+
+      setStudentData({
+        ...profile,
+        ...INITIAL_UI_STATE,
+        courses: classes.map(c => ({
+          id: c.id,
+          title: c.name,
+          teacher: 'TBD',
+          progress: 0
+        })),
+        tasks: [], // We can fetch assignments per class later or all at once if we had an endpoint
+        marks: {
+          rats: grades.filter(g => g.assignmentTitle.includes('RAT')).map(g => g.score),
+          cats: grades.filter(g => g.assignmentTitle.includes('CAT')).map(g => g.score)
+        }
+      });
+    } catch (err) {
+      console.error('Failed to fetch student data:', err);
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (studentData) {
-      localStorage.setItem('studentData', JSON.stringify(studentData));
-      localStorage.setItem('studentAuthenticated', 'true');
+    if (isAuthenticated) {
+      fetchStudentData();
     } else {
-      localStorage.removeItem('studentData');
-      localStorage.setItem('studentAuthenticated', 'false');
+      setStudentData(null);
     }
-  }, [studentData]);
+  }, [isAuthenticated]);
 
-  // Called from the login/onboarding page
-  const login = (profileData) => {
-    const newStudent = {
-      ...DEFAULT_PORTAL_DATA,
-      id: 'STU-' + Math.floor(1000 + Math.random() * 9000),
-      name: profileData.name,
-      email: profileData.email,
-      phone: profileData.phone || '',
-      grade: profileData.grade,
-      interests: profileData.interests || '',
-      school: profileData.school || '',
-      avatarUrl: null,
-      aiStudyEnabled: false,
-    };
-    setStudentData(newStudent);
-    setIsAuthenticated(true);
+  const login = async (email, password) => {
+    // Auth logic is handled in AuthContext, but if this context needs to react:
+    await fetchStudentData();
   };
 
   const logout = () => {
     setStudentData(null);
-    setIsAuthenticated(false);
+    localStorage.removeItem('somobloom_token');
+    localStorage.removeItem('somobloom_user');
   };
 
   const updateProfile = (newData) => {
@@ -110,7 +110,6 @@ export function StudentProvider({ children }) {
     }));
   };
 
-  // Temporary function for testing AI toggle
   const toggleAiStudy = () => {
     setStudentData(prev => ({
       ...prev,
@@ -122,19 +121,21 @@ export function StudentProvider({ children }) {
     <StudentContext.Provider value={{ 
       studentData, 
       isAuthenticated, 
+      isLoading,
+      error,
       login, 
       logout, 
       updateProfile, 
       toggleTask,
       addMark,
       updateAttendance,
-      toggleAiStudy
+      toggleAiStudy,
+      refreshData: fetchStudentData
     }}>
       {children}
     </StudentContext.Provider>
   );
 }
-
 
 export function useStudent() {
   const context = useContext(StudentContext);
