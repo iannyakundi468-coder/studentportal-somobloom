@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useStudent } from '../context/StudentContext';
-import { Camera, Save, X, Edit2, AlertCircle, User } from 'lucide-react';
+import { Camera, Save, X, Edit2, AlertCircle, User, Bot, CheckCircle2, XCircle } from 'lucide-react';
 
 const profileSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -248,9 +248,33 @@ export default function Profile() {
             </div>
           )}
         </form>
+      </div>      {/* AI Assistant Status Header */}
+      <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 border border-gray-100 dark:border-gray-700 shadow-sm">
+        <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+          <Bot className="text-blue-500" size={24} />
+          AI Study Assistant Status
+        </h3>
+        
+        <div className={`flex items-center justify-between p-6 rounded-2xl border ${studentData.aiStudyEnabled ? 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800' : 'bg-gray-50 border-gray-200 dark:bg-gray-800/50 dark:border-gray-700'}`}>
+          <div>
+            <p className="font-semibold text-gray-900 dark:text-white">
+              {studentData.aiStudyEnabled ? 'Activated' : 'Inactive'}
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              {studentData.aiStudyEnabled 
+                ? 'Your teacher has enabled AI-powered study assistance for your account. You can now access smart tutoring.' 
+                : 'The AI Study Assistant is currently disabled. Your teacher must activate this feature for your account.'}
+            </p>
+          </div>
+          <div className="flex-shrink-0">
+            {studentData.aiStudyEnabled ? (
+              <CheckCircle2 className="text-green-500" size={32} />
+            ) : (
+              <XCircle className="text-gray-400" size={32} />
+            )}
+          </div>
+        </div>
       </div>
-
-
 
     </div>
   );
