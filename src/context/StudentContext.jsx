@@ -80,6 +80,7 @@ export function StudentProvider({ children }) {
   }, [isAuthenticated]);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   const login = async (emailOrProfile, password) => {
     if (typeof emailOrProfile === 'object' && emailOrProfile !== null) {
       // Mock Login Mode
@@ -138,6 +139,11 @@ export function StudentProvider({ children }) {
     await fetchStudentData();
 >>>>>>> 2bb18e1 (feat: replace mock data with real API integration in StudentContext)
 >>>>>>> 53e9fd7 (feat: replace mock data with real API integration in StudentContext)
+=======
+  const login = async (email, password) => {
+    // Auth logic is handled in AuthContext, but if this context needs to react:
+    await fetchStudentData();
+>>>>>>> 9f0742d (env changes)
   };
 
   const logout = () => {
