@@ -56,7 +56,9 @@ export default function Profile() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setAvatarPreview(reader.result);
+        const newAvatarUrl = reader.result;
+        setAvatarPreview(newAvatarUrl);
+        updateProfile({ avatarUrl: newAvatarUrl });
       };
       reader.readAsDataURL(file);
     }
@@ -96,20 +98,16 @@ export default function Profile() {
                 ) : (
                   <User className="text-gray-400" size={48} />
                 )}
-                {isEditing && (
-                  <label className="absolute inset-0 flex items-center justify-center bg-black/50 text-white cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Camera size={24} />
-                    <input type="file" className="hidden" accept="image/*" onChange={handleAvatarChange} />
-                  </label>
-                )}
+                <label className="absolute inset-0 flex items-center justify-center bg-black/50 text-white cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Camera size={24} />
+                  <input type="file" className="hidden" accept="image/*" onChange={handleAvatarChange} />
+                </label>
               </div>
             </div>
             <div>
               <h3 className="text-xl font-bold">{studentData.name}</h3>
               <p className="text-gray-500 dark:text-gray-400">{studentData.id}</p>
-              {isEditing && (
-                <p className="text-sm text-blue-600 dark:text-blue-400 mt-1">Click image to upload new avatar</p>
-              )}
+              <p className="text-sm text-blue-600 dark:text-blue-400 mt-1">Click image to upload new avatar</p>
             </div>
           </div>
 
@@ -252,26 +250,7 @@ export default function Profile() {
         </form>
       </div>
 
-      {/* Demo Controls (Since there's no backend) */}
-      <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-3xl p-6 border border-indigo-100 dark:border-indigo-800">
-        <h3 className="text-sm font-bold text-indigo-900 dark:text-indigo-300 uppercase tracking-wider mb-4">Demo Controls</h3>
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="font-semibold text-gray-900 dark:text-white">AI Study Assistant</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Simulate a teacher enabling or disabling this feature for your account.</p>
-          </div>
-          <button
-            onClick={() => toggleAiStudy()}
-            className={`px-4 py-2 rounded-xl font-bold text-sm transition-colors ${
-              studentData.aiStudyEnabled
-                ? 'bg-red-100 text-red-600 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400'
-                : 'bg-green-100 text-green-600 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-400'
-            }`}
-          >
-            {studentData.aiStudyEnabled ? 'Disable AI (Mock)' : 'Enable AI (Mock)'}
-          </button>
-        </div>
-      </div>
+
 
     </div>
   );

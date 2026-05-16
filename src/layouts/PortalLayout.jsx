@@ -31,15 +31,7 @@ export default function PortalLayout() {
       <aside className={`
         fixed inset-y-0 left-0 z-50 w-64 bg-white text-slate-600 border-r border-slate-200 transform transition-transform duration-200 ease-in-out md:relative md:translate-x-0
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-<<<<<<< HEAD
-<<<<<<< HEAD
         hidden md:flex flex-col
-=======
-        ${!isTeacher && 'hidden md:flex'} 
->>>>>>> 6b9785a (feat: implement distinct mobile layout for student and teacher portals)
-=======
-        hidden md:flex flex-col
->>>>>>> d0b4f25 (refactor: isolate student portal by removing teacher components)
       `}>
         <div className="h-full flex flex-col w-full">
           {/* Brand */}
@@ -105,31 +97,10 @@ export default function PortalLayout() {
           
           {/* Mobile Left Section */}
           <div className="flex items-center gap-2 md:hidden">
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> d0b4f25 (refactor: isolate student portal by removing teacher components)
             <div className="w-8 h-8 bg-yellow-400 rounded flex items-center justify-center shadow-sm">
               <GraduationCap size={20} className="text-slate-900" />
             </div>
             <span className="font-bold text-slate-900 tracking-tight">Somobloom</span>
-<<<<<<< HEAD
-=======
-            {isTeacher ? (
-              <button onClick={() => setIsSidebarOpen(true)} className="p-2 -ml-2 text-slate-500">
-                <Menu size={20} />
-              </button>
-            ) : (
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-yellow-400 rounded flex items-center justify-center shadow-sm">
-                  <GraduationCap size={20} className="text-slate-900" />
-                </div>
-                <span className="font-bold text-slate-900 tracking-tight">Somobloom</span>
-              </div>
-            )}
->>>>>>> 6b9785a (feat: implement distinct mobile layout for student and teacher portals)
-=======
->>>>>>> d0b4f25 (refactor: isolate student portal by removing teacher components)
           </div>
           
           <div className="hidden md:flex items-center gap-2 text-sm text-slate-500 font-medium">
@@ -178,15 +149,7 @@ export default function PortalLayout() {
         </header>
 
         {/* Scrollable Content */}
-<<<<<<< HEAD
-<<<<<<< HEAD
         <main className="flex-1 overflow-auto p-4 md:p-8 pb-24 md:pb-8">
-=======
-        <main className={`flex-1 overflow-auto p-4 md:p-8 ${!isTeacher ? 'pb-24 md:pb-8' : ''}`}>
->>>>>>> 6b9785a (feat: implement distinct mobile layout for student and teacher portals)
-=======
-        <main className="flex-1 overflow-auto p-4 md:p-8 pb-24 md:pb-8">
->>>>>>> d0b4f25 (refactor: isolate student portal by removing teacher components)
           <div className="max-w-6xl mx-auto h-full">
             <ErrorBoundary>
               <Outlet />
@@ -194,8 +157,6 @@ export default function PortalLayout() {
           </div>
         </main>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
         {/* Bottom Navigation (Student Only) */}
         <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 flex justify-around items-center pb-safe">
           {navItems.map((item) => (
@@ -209,61 +170,11 @@ export default function PortalLayout() {
                 }`
               }
             >
-              <item.icon size={20} className={`mb-1 ${({isActive}) => isActive ? 'text-blue-600' : ''}`} />
+              <item.icon size={20} className="mb-1" />
               <span className="text-[10px] font-medium">{item.label}</span>
             </NavLink>
           ))}
         </nav>
-=======
-        {/* Mobile Sidebar Overlay (Teacher Only) */}
-        {isSidebarOpen && isTeacher && (
-          <div 
-            className="fixed inset-0 bg-slate-900/50 z-40 md:hidden"
-            onClick={() => setIsSidebarOpen(false)}
-          />
-        )}
-
-        {/* Bottom Navigation (Student Only) */}
-        {!isTeacher && (
-          <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 flex justify-around items-center pb-safe">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end={item.to === '/student'}
-                className={({ isActive }) =>
-                  `flex flex-col items-center justify-center py-3 px-2 flex-1 transition-colors ${
-                    isActive ? 'text-blue-600' : 'text-slate-400 hover:text-slate-900'
-                  }`
-                }
-              >
-                <item.icon size={20} className={`mb-1 ${({isActive}) => isActive ? 'text-blue-600' : ''}`} />
-                <span className="text-[10px] font-medium">{item.label}</span>
-              </NavLink>
-            ))}
-          </nav>
-        )}
->>>>>>> 6b9785a (feat: implement distinct mobile layout for student and teacher portals)
-=======
-        {/* Bottom Navigation (Student Only) */}
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 flex justify-around items-center pb-safe">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.to === '/student'}
-              className={({ isActive }) =>
-                `flex flex-col items-center justify-center py-3 px-2 flex-1 transition-colors ${
-                  isActive ? 'text-blue-600' : 'text-slate-400 hover:text-slate-900'
-                }`
-              }
-            >
-              <item.icon size={20} className={`mb-1 ${({isActive}) => isActive ? 'text-blue-600' : ''}`} />
-              <span className="text-[10px] font-medium">{item.label}</span>
-            </NavLink>
-          ))}
-        </nav>
->>>>>>> d0b4f25 (refactor: isolate student portal by removing teacher components)
       </div>
     </div>
   );

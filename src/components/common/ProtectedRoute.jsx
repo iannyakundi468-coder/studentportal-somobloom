@@ -2,10 +2,10 @@ import { Navigate } from 'react-router-dom';
 import { useStudent } from '../../context/StudentContext';
 
 export default function ProtectedRoute({ children }) {
-  const { currentStudent } = useStudent();
+  const { studentData } = useStudent();
   
-  // If no student is logged in, redirect to login
-  if (!currentStudent) {
+  // If student is not logged in, redirect to login
+  if (!studentData) {
     return <Navigate to="/" replace />;
   }
   

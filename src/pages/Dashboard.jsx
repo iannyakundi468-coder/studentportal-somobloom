@@ -30,8 +30,8 @@ export default function Dashboard() {
             )}
           </div>
           <div>
-            <h2 className="text-3xl font-bold mb-1">Welcome back, {studentData.name.split(' ')[0]}!</h2>
-            <p className="text-slate-800 font-medium">{studentData.grade}</p>
+            <h2 className="text-3xl font-bold mb-1">Welcome back, {(studentData?.name || 'Student').split(' ')[0]}!</h2>
+            <p className="text-slate-800 font-medium">{studentData?.grade || ''}</p>
           </div>
         </div>
       </div>
