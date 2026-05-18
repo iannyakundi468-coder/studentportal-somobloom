@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Send, Bot, X, Sparkles, Loader2 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { useSettings } from '../../context/SettingsContext';
+import { api } from '../../lib/api';
 
 interface Message {
     id: number;
@@ -38,25 +39,19 @@ export const GeminiTutor = () => {
         setIsLoading(true);
 
         try {
-            const res = await fetch('/api/ai/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: userMsg.text, context: 'k12_education' })
-            });
-
-            const data = await res.json();
+            const data = await api.post<{ response: string }>('/student/ask-tutor', { prompt: userMsg.text });
 
             const aiMsg: Message = {
                 id: Date.now() + 1,
-                text: data.reply || data.details || data.error || "I'm having trouble connecting to my brain right now.",
+                text: data.response || "I'm having trouble connecting to my brain right now.",
                 sender: 'ai',
                 timestamp: new Date()
             };
             setMessages(prev => [...prev, aiMsg]);
-        } catch (error) {
+        } catch (error: any) {
             setMessages(prev => [...prev, {
                 id: Date.now() + 1,
-                text: "Sorry, I encountered an error. Please try again later.",
+                text: error.message || "Sorry, I encountered an error. Please try again later.",
                 sender: 'ai',
                 timestamp: new Date()
             }]);
