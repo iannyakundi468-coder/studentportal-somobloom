@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { api } from '../lib/api';
 
 const StudentContext = createContext(null);
@@ -21,8 +21,7 @@ export function StudentProvider({ children }) {
   const token = localStorage.getItem('somobloom_token');
   const isAuthenticated = !!token;
 
-  const fetchStudentData = async () => {
-<<<<<<< HEAD
+  const fetchStudentData = useCallback(async () => {
     const activeToken = localStorage.getItem('somobloom_token');
     if (!activeToken) return;
 
@@ -34,9 +33,6 @@ export function StudentProvider({ children }) {
       return;
     }
 
-=======
-    if (!token) return;
->>>>>>> 53e9fd7 (feat: replace mock data with real API integration in StudentContext)
     setIsLoading(true);
     try {
       // Fetch profile
@@ -51,16 +47,16 @@ export function StudentProvider({ children }) {
       setStudentData({
         ...profile,
         ...INITIAL_UI_STATE,
-        courses: classes.map(c => ({
+        courses: (classes || []).map(c => ({
           id: c.id,
           title: c.name,
           teacher: 'TBD',
           progress: 0
         })),
-        tasks: [], // We can fetch assignments per class later or all at once if we had an endpoint
+        tasks: [],
         marks: {
-          rats: grades.filter(g => g.assignmentTitle.includes('RAT')).map(g => g.score),
-          cats: grades.filter(g => g.assignmentTitle.includes('CAT')).map(g => g.score)
+          rats: (grades || []).filter(g => g.assignmentTitle.includes('RAT')).map(g => g.score),
+          cats: (grades || []).filter(g => g.assignmentTitle.includes('CAT')).map(g => g.score)
         }
       });
     } catch (err) {
@@ -69,7 +65,7 @@ export function StudentProvider({ children }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -77,10 +73,8 @@ export function StudentProvider({ children }) {
     } else {
       setStudentData(null);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, fetchStudentData]);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
   const login = async (emailOrProfile, password) => {
     if (typeof emailOrProfile === 'object' && emailOrProfile !== null) {
       // Mock Login Mode
@@ -115,35 +109,6 @@ export function StudentProvider({ children }) {
         setIsLoading(false);
       }
     }
-=======
-<<<<<<< HEAD
-  // Called from the login/onboarding page
-  const login = (profileData) => {
-    const newStudent = {
-      ...DEFAULT_PORTAL_DATA,
-      id: 'STU-' + Math.floor(1000 + Math.random() * 9000),
-      name: profileData.name || 'Student Name',
-      email: profileData.email,
-      phone: profileData.phone || '',
-      grade: profileData.grade || '10th Grade',
-      interests: profileData.interests || '',
-      school: profileData.school || 'Somobloom High',
-      avatarUrl: null,
-      aiStudyEnabled: false,
-    };
-    setStudentData(newStudent);
-    setIsAuthenticated(true);
-=======
-  const login = async (email, password) => {
-    // Auth logic is handled in AuthContext, but if this context needs to react:
-    await fetchStudentData();
->>>>>>> 2bb18e1 (feat: replace mock data with real API integration in StudentContext)
->>>>>>> 53e9fd7 (feat: replace mock data with real API integration in StudentContext)
-=======
-  const login = async (email, password) => {
-    // Auth logic is handled in AuthContext, but if this context needs to react:
-    await fetchStudentData();
->>>>>>> 9f0742d (env changes)
   };
 
   const logout = () => {
@@ -152,45 +117,77 @@ export function StudentProvider({ children }) {
     localStorage.removeItem('somobloom_user');
   };
 
-  const updateProfile = (newData) => {
-    setStudentData(prev => ({ ...prev, ...newData }));
+  const updateProfile = async (newData) => {
+    // 1. Update local UI state immediately for responsive feedback
+    setStudentData(prev => prev ? { ...prev, ...newData } : null);
+
+    // 2. If real backend session, execute PUT /student/me to persist the changes (like avatarUrl) live!
+    const activeToken = localStorage.getItem('somobloom_token');
+    if (activeToken && activeToken !== 'mock_student_token') {
+      try {
+        await api.put('/student/me', {
+          name: newData.name,
+          avatarUrl: newData.avatarUrl
+        });
+      } catch (err) {
+        console.error('Failed to save profile changes to backend:', err);
+      }
+    } else if (activeToken === 'mock_student_token') {
+      // If mock session, update the local storage copy so it persists locally
+      const stored = localStorage.getItem('somobloom_user');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        localStorage.setItem('somobloom_user', JSON.stringify({ ...parsed, ...newData }));
+      }
+    }
   };
 
   const toggleTask = (taskId) => {
-    setStudentData(prev => ({
-      ...prev,
-      tasks: prev.tasks.map(task =>
-        task.id === taskId ? { ...task, completed: !task.completed } : task
-      )
-    }));
+    setStudentData(prev => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        tasks: prev.tasks.map(task =>
+          task.id === taskId ? { ...task, completed: !task.completed } : task
+        )
+      };
+    });
   };
 
   const addMark = (type, value) => {
-    setStudentData(prev => ({
-      ...prev,
-      marks: {
-        ...prev.marks,
-        [type]: [...prev.marks[type], parseFloat(value)]
-      }
-    }));
+    setStudentData(prev => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        marks: {
+          ...prev.marks,
+          [type]: [...prev.marks[type], parseFloat(value)]
+        }
+      };
+    });
   };
 
   const updateAttendance = (isPresent) => {
-    setStudentData(prev => ({
-      ...prev,
-      attendance: {
-        ...prev.attendance,
-        present: isPresent ? prev.attendance.present + 1 : prev.attendance.present,
-        total: prev.attendance.total + 1
-      }
-    }));
+    setStudentData(prev => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        attendance: {
+          present: isPresent ? prev.attendance.present + 1 : prev.attendance.present,
+          total: prev.attendance.total + 1
+        }
+      };
+    });
   };
 
   const toggleAiStudy = () => {
-    setStudentData(prev => ({
-      ...prev,
-      aiStudyEnabled: !prev.aiStudyEnabled
-    }));
+    setStudentData(prev => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        aiStudyEnabled: !prev.aiStudyEnabled
+      };
+    });
   };
 
   return (
