@@ -17,15 +17,12 @@ createRoot(document.getElementById('root')!).render(
 )
 console.log('Solian Wolves v1.2 - offline mode disabled');
 
-// Service Worker Disabled for Development
-// if ('serviceWorker' in navigator) {
-//   window.addEventListener('load', () => {
-//     navigator.serviceWorker.register('/sw.js').then(registration => {
-//       console.log('SW registered: ', registration);
-//     }).catch(registrationError => {
-//       console.log('SW registration failed: ', registrationError);
-//     });
-//   });
-// }
-
-// Solian Wolves V1.1
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then(registration => {
+      console.log('[PWA] Service Worker registered successfully: ', registration);
+    }).catch(registrationError => {
+      console.log('[PWA] Service Worker registration failed: ', registrationError);
+    });
+  });
+}
