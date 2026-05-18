@@ -23,20 +23,12 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-<<<<<<< HEAD
     "@cloudflare/vite-plugin": "^1.28.0",
     "@eslint/js": "^10.0.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^24.10.1",
-=======
-    "@eslint/js": "^10.0.1",
->>>>>>> 67080ae (feat: implement API client and integrate authenticatable login flow with backend services)
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
-<<<<<<< HEAD
-    "@vercel/node": "^3.2.0",
-=======
->>>>>>> edf2f25 (chore: upgrade @vitejs/plugin-react to version 6.0.1)
     "@vitejs/plugin-react": "^6.0.1",
     "eslint": "^10.0.1",
     "eslint-plugin-react": "^7.37.4",
