@@ -4,6 +4,7 @@ import { LayoutDashboard, User, LogOut, GraduationCap, Menu, Bell, FolderGit2, B
 import { ErrorBoundary } from '../components/common/ErrorBoundary';
 import { useStudent } from '../context/StudentContext';
 import GlobalAiAssistant from '../components/ai/GlobalAiAssistant';
+import SomoBloomLogo from '../components/SomoBloomLogo';
 
 export default function PortalLayout() {
   const { studentData, logout: studentLogout } = useStudent();
@@ -35,11 +36,8 @@ export default function PortalLayout() {
       `}>
         <div className="h-full flex flex-col w-full">
           {/* Brand */}
-          <div className="p-6 flex items-center gap-3 border-b border-slate-100">
-            <div className="w-8 h-8 bg-yellow-400 rounded flex items-center justify-center shadow-sm">
-              <GraduationCap size={20} className="text-slate-900" />
-            </div>
-            <span className="text-xl font-bold text-slate-900 tracking-tight">Somobloom</span>
+          <div className="p-6 flex items-center border-b border-slate-100">
+            <SomoBloomLogo size={36} fontSize="17px" />
           </div>
 
           {/* Nav */}

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useStudent } from '../context/StudentContext';
 import { useNavigate } from 'react-router-dom';
 import { GraduationCap, Mail, Lock, ArrowRight, ShieldCheck, Clock } from 'lucide-react';
+import SomoBloomLogo from '../components/SomoBloomLogo';
 
 export default function LoginPage() {
   const { login } = useStudent();
@@ -9,6 +10,11 @@ export default function LoginPage() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({ email: '', password: '' });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -29,9 +35,9 @@ export default function LoginPage() {
 
       <div className="relative z-10 w-full max-w-md">
         
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl shadow-xl mb-6 rotate-3">
-            <GraduationCap className="text-white" size={40} />
+        <div className="text-center mb-8 flex flex-col items-center">
+          <div className="inline-flex items-center justify-center p-3 bg-white border border-slate-200 rounded-3xl shadow-xl mb-6 shadow-indigo-500/10 rotate-3">
+            <SomoBloomLogo size={64} showText={false} />
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-2 tracking-tight">
             Somobloom <span className="text-blue-600">Portal</span>
