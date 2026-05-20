@@ -55,6 +55,26 @@ export function StudentProvider({ children }) {
       // Fetch grades
       const { grades } = await api.get('/student/grades');
 
+      // Fetch portfolio
+      let portfolio = [];
+      try {
+        const response = await api.get('/student/portfolio');
+        portfolio = response.portfolio || [];
+      } catch (err) {
+        console.warn('Failed to load student portfolio, using mock state:', err);
+      }
+
+      const formattedPortfolio = portfolio.length > 0 ? portfolio.map(item => ({
+        id: item.id,
+        title: item.title,
+        type: item.type,
+        course: (classes || []).find(c => c.id === item.classId)?.name || 'Class Evidence',
+        date: item.createdAt.split('T')[0],
+        description: item.description || '',
+        imageUrl: item.imageUrl,
+        tags: item.tags || []
+      })) : INITIAL_UI_STATE.portfolio;
+
       setStudentData({
         ...profile,
         ...INITIAL_UI_STATE,
@@ -65,6 +85,7 @@ export function StudentProvider({ children }) {
           progress: 0
         })),
         tasks: [],
+        portfolio: formattedPortfolio,
         marks: {
           rats: (grades || []).filter(g => g.assignmentTitle.includes('RAT')).map(g => g.score),
           cats: (grades || []).filter(g => g.assignmentTitle.includes('CAT')).map(g => g.score)
