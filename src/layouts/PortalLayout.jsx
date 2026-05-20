@@ -95,10 +95,7 @@ export default function PortalLayout() {
           
           {/* Mobile Left Section */}
           <div className="flex items-center gap-2 md:hidden">
-            <div className="w-8 h-8 bg-yellow-400 rounded flex items-center justify-center shadow-sm">
-              <GraduationCap size={20} className="text-slate-900" />
-            </div>
-            <span className="font-bold text-slate-900 tracking-tight">Somobloom</span>
+            <SomoBloomLogo size={32} fontSize="16px" />
           </div>
           
           <div className="hidden md:flex items-center gap-2 text-sm text-slate-500 font-medium">

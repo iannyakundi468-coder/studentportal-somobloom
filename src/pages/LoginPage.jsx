@@ -40,7 +40,7 @@ export default function LoginPage() {
             <SomoBloomLogo size={64} showText={false} />
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-2 tracking-tight">
-            Somobloom <span className="text-blue-600">Portal</span>
+            SomoBloom <span className="text-blue-600">Portal</span>
           </h1>
           <p className="text-slate-500 text-sm">Student Learning Platform</p>
         </div>
@@ -111,7 +111,7 @@ export default function LoginPage() {
         </div>
         
         <p className="text-center text-slate-400 text-xs mt-8">
-          Somobloom School Management System • {new Date().getFullYear()}
+          SomoBloom School Management System • {new Date().getFullYear()}
         </p>
       </div>
     </div>

@@ -1,9 +1,10 @@
 interface SomoBloomLogoProps {
   size?: number;
   showText?: boolean;
+  fontSize?: string;
 }
 
-export default function SomoBloomLogo({ size = 40, showText = true }: SomoBloomLogoProps) {
+export default function SomoBloomLogo({ size = 40, showText = true, fontSize = '18px' }: SomoBloomLogoProps) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', userSelect: 'none' }}>
       <svg
@@ -79,7 +80,7 @@ export default function SomoBloomLogo({ size = 40, showText = true }: SomoBloomL
 
       {showText && (
         <span style={{
-          fontSize: '18px',
+          fontSize: fontSize,
           fontWeight: '800',
           letterSpacing: '-0.03em',
           color: 'inherit',

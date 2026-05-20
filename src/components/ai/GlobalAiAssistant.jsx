@@ -7,7 +7,7 @@ export default function GlobalAiAssistant() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState([
-    { id: 1, text: "Hi! I'm your Somobloom AI study partner. How can I help you understand your lessons today?", sender: 'ai' }
+    { id: 1, text: "Hi! I'm your SomoBloom AI study partner. How can I help you understand your lessons today?", sender: 'ai' }
   ]);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef(null);
@@ -73,7 +73,7 @@ export default function GlobalAiAssistant() {
           <div className="p-4 bg-yellow-400 text-slate-900 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Bot size={24} />
-              <span className="font-bold">Somobloom AI</span>
+              <span className="font-bold">SomoBloom AI</span>
             </div>
             <div className="flex items-center gap-2">
               <button onClick={() => setIsMinimized(!isMinimized)} className="p-1 hover:bg-black/10 rounded-lg">

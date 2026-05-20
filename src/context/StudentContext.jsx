@@ -97,7 +97,7 @@ export function StudentProvider({ children }) {
         phone: profileData.phone || '',
         grade: profileData.grade || '10th Grade',
         interests: profileData.interests || '',
-        school: profileData.school || 'Somobloom High',
+        school: profileData.school || 'SomoBloom High',
         avatarUrl: null,
         ...INITIAL_UI_STATE,
       };
