@@ -9,6 +9,14 @@ import { Link } from 'react-router-dom';
 export default function Dashboard() {
   const { studentData } = useStudent();
 
+  if (!studentData) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       

@@ -1,10 +1,4 @@
-interface SomoBloomLogoProps {
-  size?: number;
-  showText?: boolean;
-  fontSize?: string;
-}
-
-export default function SomoBloomLogo({ size = 40, showText = true, fontSize = '18px' }: SomoBloomLogoProps) {
+export default function SomoBloomLogo({ size = 40, showText = true, fontSize = '18px' }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', userSelect: 'none' }}>
       <svg

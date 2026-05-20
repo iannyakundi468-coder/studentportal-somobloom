@@ -1,11 +1,11 @@
 {
-    "name": "The St Joseph's Kisii South Academy",
-    "short_name": "St Joseph's Kisii South",
+    "name": "SomoBloom Student Portal",
+    "short_name": "SomoBloom",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0f172a",
-    "theme_color": "#10b981",
-    "description": "School Management System for Guardians and Staff",
+    "theme_color": "#4f46e5",
+    "description": "CBC Student Progress and Portfolio Tracking Portal",
     "icons": [
         {
             "src": "/vite.svg",
