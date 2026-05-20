@@ -5,12 +5,23 @@ const StudentContext = createContext(null);
 
 // Keeping some mock structure for UI compatibility but will populate with real data
 const INITIAL_UI_STATE = {
-  courses: [],
-  tasks: [],
-  portfolio: [],
-  marks: { rats: [], cats: [] },
-  attendance: { present: 0, total: 0 },
-  aiStudyEnabled: false
+  courses: [
+    { id: 1, title: 'Mathematics (CBC)', teacher: 'Mr. Solomon Nyakundi', progress: 75, grade: 'Grade 6', description: 'Algebra, Geometry, and Data Analysis' },
+    { id: 2, title: 'Creative Arts & Science', teacher: 'Mrs. Janet Bloom', progress: 40, grade: 'Grade 6', description: 'Integrated science and arts curriculum' },
+    { id: 3, title: 'English Language', teacher: 'Miss Clara Zawadi', progress: 90, grade: 'Grade 6', description: 'Grammar, vocabulary, and creative writing' }
+  ],
+  tasks: [
+    { id: 1, text: 'Complete Math Exercise 4.2', completed: false },
+    { id: 2, text: 'Submit Science Portfolio Artifact', completed: true },
+    { id: 3, text: 'Prepare for CBC Oral Assessment', completed: false }
+  ],
+  portfolio: [
+    { id: 1, title: 'CBC Science Plant Growth Experiment', description: 'Investigated effect of sunlight on germination', date: '2026-05-10', xp: 150 },
+    { id: 2, title: 'My Swahili Storybook', description: 'Wrote and illustrated a story about my village', date: '2026-05-14', xp: 200 }
+  ],
+  marks: { rats: [85, 90, 78], cats: [88, 92] },
+  attendance: { present: 48, total: 50 },
+  aiStudyEnabled: true
 };
 
 export function StudentProvider({ children }) {

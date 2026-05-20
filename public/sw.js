@@ -2,7 +2,7 @@ const CACHE_NAME = 'somobloom-student-v1';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
-  '/src/main.tsx',
+  '/src/main.jsx',
   '/src/index.css'
 ];
 
@@ -60,7 +60,8 @@ self.addEventListener('fetch', (event) => {
         return networkResponse;
       }).catch(() => {
         // Fallback offline response for HTML page
-        if (event.request.headers.get('accept').includes('text/html')) {
+        const acceptHeader = event.request.headers.get('accept');
+        if (acceptHeader && acceptHeader.includes('text/html')) {
           return caches.match('/index.html');
         }
       });
