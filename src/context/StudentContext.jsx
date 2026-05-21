@@ -36,14 +36,6 @@ export function StudentProvider({ children }) {
     const activeToken = localStorage.getItem('somobloom_token');
     if (!activeToken) return;
 
-    if (activeToken === 'mock_student_token') {
-      const stored = localStorage.getItem('somobloom_user');
-      if (stored) {
-        setStudentData(JSON.parse(stored));
-      }
-      return;
-    }
-
     setIsLoading(true);
     try {
       // Fetch profile
@@ -107,39 +99,18 @@ export function StudentProvider({ children }) {
     }
   }, [isAuthenticated, fetchStudentData]);
 
-  const login = async (emailOrProfile, password) => {
-    if (typeof emailOrProfile === 'object' && emailOrProfile !== null) {
-      // Mock Login Mode
-      const profileData = emailOrProfile;
-      const newStudent = {
-        id: 'STU-' + Math.floor(1000 + Math.random() * 9000),
-        name: profileData.name || 'Student Name',
-        email: profileData.email,
-        phone: profileData.phone || '',
-        grade: profileData.grade || '10th Grade',
-        interests: profileData.interests || '',
-        school: profileData.school || 'SomoBloom High',
-        avatarUrl: null,
-        ...INITIAL_UI_STATE,
-      };
-      localStorage.setItem('somobloom_token', 'mock_student_token');
-      localStorage.setItem('somobloom_user', JSON.stringify(newStudent));
-      setStudentData(newStudent);
-    } else {
-      // Real backend mode
-      setIsLoading(true);
-      try {
-        const email = emailOrProfile;
-        const response = await api.post('/auth/login', { email, password, role: 'student' });
-        localStorage.setItem('somobloom_token', response.token);
-        await fetchStudentData();
-      } catch (err) {
-        console.error('Login failed:', err);
-        setError(err.message);
-        throw err;
-      } finally {
-        setIsLoading(false);
-      }
+  const login = async (email, password) => {
+    setIsLoading(true);
+    try {
+      const response = await api.post('/auth/login', { email, password });
+      localStorage.setItem('somobloom_token', response.token);
+      await fetchStudentData();
+    } catch (err) {
+      console.error('Login failed:', err);
+      setError(err.message);
+      throw err;
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -153,9 +124,9 @@ export function StudentProvider({ children }) {
     // 1. Update local UI state immediately for responsive feedback
     setStudentData(prev => prev ? { ...prev, ...newData } : null);
 
-    // 2. If real backend session, execute PUT /student/me to persist the changes (like avatarUrl) live!
+    // 2. Execute PUT /student/me to persist the changes live
     const activeToken = localStorage.getItem('somobloom_token');
-    if (activeToken && activeToken !== 'mock_student_token') {
+    if (activeToken) {
       try {
         await api.put('/student/me', {
           name: newData.name,
@@ -163,13 +134,6 @@ export function StudentProvider({ children }) {
         });
       } catch (err) {
         console.error('Failed to save profile changes to backend:', err);
-      }
-    } else if (activeToken === 'mock_student_token') {
-      // If mock session, update the local storage copy so it persists locally
-      const stored = localStorage.getItem('somobloom_user');
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        localStorage.setItem('somobloom_user', JSON.stringify({ ...parsed, ...newData }));
       }
     }
   };
