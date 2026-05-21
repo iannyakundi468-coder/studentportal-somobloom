@@ -63,14 +63,14 @@ export default function LoginPage() {
             <div className="space-y-4">
               <div className="space-y-1.5">
                 <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-                  <Mail size={14} /> Email Address
+                  <Mail size={14} /> Email or Phone Number
                 </label>
                 <input
                   required
-                  type="email"
+                  type="text"
                   value={formData.email}
                   onChange={(e) => setFormData(p => ({ ...p, email: e.target.value }))}
-                  placeholder="student@somobloom.edu"
+                  placeholder="Email or Phone Number"
                   className="w-full px-4 py-4 bg-white border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                 />
               </div>
