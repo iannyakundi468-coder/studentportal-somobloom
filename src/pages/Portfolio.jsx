@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import { useStudent } from '../context/StudentContext';
 import EvidenceGrid from '../components/portfolio/EvidenceGrid';
-import { Filter, BarChart2, ClipboardCheck, TrendingUp, Calendar, Plus, Check, X } from 'lucide-react';
+import { Filter, BarChart2, ClipboardCheck, TrendingUp, Calendar } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function Portfolio() {
-  const { studentData, addMark, updateAttendance } = useStudent();
+  const { studentData } = useStudent();
   const [selectedTag, setSelectedTag] = useState(null);
-  const [showMarkEntry, setShowMarkEntry] = useState(false);
-  const [newMark, setNewMark] = useState({ type: 'rats', value: '' });
 
   // Extract all unique tags
   const allTags = Array.from(
@@ -23,72 +22,20 @@ export default function Portfolio() {
   const attendance = studentData?.attendance || { present: 0, total: 1 };
   const attendancePercentage = ((attendance.present / attendance.total) * 100).toFixed(0);
 
-  const handleAddMark = () => {
-    if (newMark.value) {
-      addMark(newMark.type, newMark.value);
-      setNewMark({ ...newMark, value: '' });
-      setShowMarkEntry(false);
-    }
-  };
-
   return (
     <div className="space-y-10 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Student Portfolio</h2>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
-            Manage your academic progress, record your marks, and track attendance.
+            Track your academic progress, grades, and attendance.
           </p>
         </div>
-        <button 
-          onClick={() => setShowMarkEntry(!showMarkEntry)}
-          className="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-2xl font-semibold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 dark:shadow-none"
-        >
-          <Plus size={20} /> Record New Mark
-        </button>
       </div>
-
-      {/* Mark Entry Form (Conditional) */}
-      {showMarkEntry && (
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-3xl border border-indigo-100 dark:border-indigo-900 shadow-xl animate-in slide-in-from-top-4 duration-300">
-          <h4 className="font-bold mb-4">Record Academic Result</h4>
-          <div className="flex flex-col md:flex-row gap-4">
-            <select 
-              value={newMark.type}
-              onChange={(e) => setNewMark({ ...newMark, type: e.target.value })}
-              className="px-4 py-2 bg-gray-50 dark:bg-gray-900 border-none rounded-xl text-sm focus:ring-2 focus:ring-indigo-500"
-            >
-              <option value="rats">RAT (Achievement Test)</option>
-              <option value="cats">CAT (Continuous Assessment)</option>
-            </select>
-            <input 
-              type="number" 
-              placeholder="Enter mark (%)"
-              value={newMark.value}
-              onChange={(e) => setNewMark({ ...newMark, value: e.target.value })}
-              className="px-4 py-2 bg-gray-50 dark:bg-gray-900 border-none rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 flex-1"
-            />
-            <div className="flex gap-2">
-              <button 
-                onClick={handleAddMark}
-                className="px-6 py-2 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-colors"
-              >
-                Save
-              </button>
-              <button 
-                onClick={() => setShowMarkEntry(false)}
-                className="px-6 py-2 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-xl font-bold text-sm hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Stats Quick View */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-white dark:bg-gray-800 p-6 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm">
           <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center text-blue-600 dark:text-blue-400 mb-4">
             <BarChart2 size={20} />
           </div>
@@ -96,8 +43,8 @@ export default function Portfolio() {
           <p className="text-2xl font-bold mt-1 text-gray-900 dark:text-white">
             {marks.rats.length > 0 ? (marks.rats.reduce((a, b) => a + b, 0) / marks.rats.length).toFixed(1) : 0}%
           </p>
-        </div>
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm">
+        </motion.div>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white dark:bg-gray-800 p-6 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm">
           <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center text-purple-600 dark:text-purple-400 mb-4">
             <TrendingUp size={20} />
           </div>
@@ -105,21 +52,21 @@ export default function Portfolio() {
           <p className="text-2xl font-bold mt-1 text-gray-900 dark:text-white">
             {marks.cats.length > 0 ? (marks.cats.reduce((a, b) => a + b, 0) / marks.cats.length).toFixed(1) : 0}%
           </p>
-        </div>
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm">
+        </motion.div>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-white dark:bg-gray-800 p-6 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm">
           <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center text-green-600 dark:text-green-400 mb-4">
             <ClipboardCheck size={20} />
           </div>
           <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Attendance</p>
           <p className="text-2xl font-bold mt-1 text-gray-900 dark:text-white">{attendancePercentage}%</p>
-        </div>
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm">
+        </motion.div>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="bg-white dark:bg-gray-800 p-6 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm">
           <div className="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center text-orange-600 dark:text-orange-400 mb-4">
             <Calendar size={20} />
           </div>
           <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Items</p>
           <p className="text-2xl font-bold mt-1 text-gray-900 dark:text-white">{studentData?.portfolio?.length || 0}</p>
-        </div>
+        </motion.div>
       </div>
 
       {/* Performance Detail */}
@@ -138,10 +85,12 @@ export default function Portfolio() {
               <div className="flex gap-2 h-20 items-end">
                 {marks.rats.map((val, i) => (
                   <div key={i} className="flex-1 bg-blue-50 dark:bg-blue-900/20 rounded-t-lg relative group">
-                    <div 
-                      className="absolute bottom-0 left-0 right-0 bg-blue-500 rounded-t-lg transition-all duration-1000"
-                      style={{ height: `${val}%` }}
-                    ></div>
+                    <motion.div 
+                      className="absolute bottom-0 left-0 right-0 bg-blue-500 rounded-t-lg"
+                      initial={{ height: 0 }}
+                      animate={{ height: `${val}%` }}
+                      transition={{ duration: 1, delay: i * 0.05, type: "spring" }}
+                    ></motion.div>
                     <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity z-20">
                       {val}%
                     </div>
@@ -158,10 +107,12 @@ export default function Portfolio() {
               <div className="flex gap-2 h-20 items-end">
                 {marks.cats.map((val, i) => (
                   <div key={i} className="flex-1 bg-purple-50 dark:bg-purple-900/20 rounded-t-lg relative group">
-                    <div 
-                      className="absolute bottom-0 left-0 right-0 bg-purple-500 rounded-t-lg transition-all duration-1000"
-                      style={{ height: `${val}%` }}
-                    ></div>
+                    <motion.div 
+                      className="absolute bottom-0 left-0 right-0 bg-purple-500 rounded-t-lg"
+                      initial={{ height: 0 }}
+                      animate={{ height: `${val}%` }}
+                      transition={{ duration: 1, delay: i * 0.05, type: "spring" }}
+                    ></motion.div>
                     <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity z-20">
                       {val}%
                     </div>
@@ -177,38 +128,24 @@ export default function Portfolio() {
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-bold flex items-center gap-2">
               <ClipboardCheck size={24} className="text-green-500" />
-              Attendance Control
+              Attendance Overview
             </h3>
-            <div className="flex gap-2">
-              <button 
-                onClick={() => updateAttendance(false)}
-                className="p-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-100 transition-colors"
-                title="Mark Absent"
-              >
-                <X size={18} />
-              </button>
-              <button 
-                onClick={() => updateAttendance(true)}
-                className="p-2 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 rounded-lg hover:bg-green-100 transition-colors"
-                title="Mark Present"
-              >
-                <Check size={18} />
-              </button>
-            </div>
           </div>
           <div className="flex flex-col items-center justify-center h-[calc(100%-4rem)]">
             <div className="relative w-36 h-36">
               <svg className="w-full h-full" viewBox="0 0 100 100">
                 <circle className="text-gray-100 dark:text-gray-700 stroke-current" strokeWidth="10" fill="transparent" r="40" cx="50" cy="50" />
-                <circle
+                <motion.circle
                   className="text-green-500 stroke-current"
                   strokeWidth="10"
-                  strokeDasharray={`${attendancePercentage * 2.51}, 251.2`}
                   strokeLinecap="round"
                   fill="transparent"
                   r="40"
                   cx="50"
                   cy="50"
+                  initial={{ strokeDasharray: "0, 251.2" }}
+                  animate={{ strokeDasharray: `${attendancePercentage * 2.51}, 251.2` }}
+                  transition={{ duration: 1.5, ease: "easeOut" }}
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
