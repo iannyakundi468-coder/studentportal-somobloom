@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useStudent } from '../context/StudentContext';
 import { useNavigate } from 'react-router-dom';
-import { GraduationCap, Mail, Lock, ArrowRight, ShieldCheck, Clock } from 'lucide-react';
+import { Mail, Lock, ArrowRight, ShieldCheck, Cpu, GraduationCap } from 'lucide-react';
 import SomoBloomLogo from '../components/SomoBloomLogo';
 
 export default function LoginPage() {
-  const { login } = useStudent();
+  const { login, isLoading: isContextLoading } = useStudent();
   const navigate = useNavigate();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [error, setError] = useState('');
@@ -16,101 +16,143 @@ export default function LoginPage() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.password) return;
     setError('');
     setIsLoggingIn(true);
-    setTimeout(() => {
-      login({ email: formData.email });
+    
+    try {
+      // Calls StudentContext login, which automatically switches to Sandbox mode if offline
+      await login(formData.email, formData.password);
       navigate('/student');
-    }, 1200);
+    } catch (err) {
+      setError(err.message || 'Login failed. Please verify credentials.');
+    } finally {
+      setIsLoggingIn(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 relative overflow-hidden text-slate-900">
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden text-slate-800 bg-[#f8fafc]">
       
-      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-600/10 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-[-10%] right-[-5%] w-80 h-80 bg-yellow-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
+      {/* Background Neon Glowing Orbs */}
+      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-pulse-slow" />
+      <div className="absolute bottom-[-10%] right-[-5%] w-80 h-80 bg-violet-500/10 rounded-full blur-3xl animate-pulse-slow delay-3000" />
+      <div className="absolute top-[30%] right-[10%] w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl animate-pulse-slow delay-7000" />
+
+      {/* Floating Geometric Art Blocks for Premium Wow Factor */}
+      <div className="absolute top-[15%] left-[20%] w-12 h-12 bg-indigo-200/20 rounded-2xl border border-indigo-200/10 rotate-12 animate-float hidden md:block" />
+      <div className="absolute bottom-[20%] right-[25%] w-16 h-16 bg-violet-200/25 rounded-full border border-violet-200/10 -rotate-45 animate-float-delayed hidden md:block" />
 
       <div className="relative z-10 w-full max-w-md">
         
+        {/* Brand Header */}
         <div className="text-center mb-8 flex flex-col items-center">
-          <div className="inline-flex items-center justify-center p-3 bg-white border border-slate-200 rounded-3xl shadow-xl mb-6 shadow-indigo-500/10 rotate-3">
-            <SomoBloomLogo size={64} showText={false} />
+          <div className="inline-flex items-center justify-center p-4 bg-white/70 backdrop-blur-md border border-white/80 rounded-[2rem] shadow-xl mb-5 shadow-indigo-500/5 rotate-3 hover:rotate-0 transition-transform duration-300">
+            <SomoBloomLogo size={60} showText={false} />
           </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-2 tracking-tight">
-            SomoBloom <span className="text-blue-600">Portal</span>
+          <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight flex items-center gap-1.5 justify-center">
+            Somo<span className="text-indigo-600">Bloom</span>
           </h1>
-          <p className="text-slate-500 text-sm">Student Learning Platform</p>
+          <p className="text-slate-500 text-sm mt-1.5 font-medium tracking-wide">
+            Kenyan CBC Student Portal
+          </p>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-[2.5rem] p-8 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.05)] relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 to-indigo-500" />
+        {/* Glassmorphic Card Container */}
+        <div className="glass-card p-8 md:p-10 relative overflow-hidden border border-white/60">
+          {/* Shifting Top Decorative Accent Gradient */}
+          <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500" />
           
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="text-center mb-4">
-              <h2 className="text-2xl font-bold text-slate-900">Welcome Back</h2>
-              <p className="text-slate-500 text-sm">Sign in to your student account</p>
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">Welcome Back, Learner</h2>
+              <p className="text-slate-500 text-sm mt-1">Sign in to your learning dashboard</p>
             </div>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-3 rounded-xl">
+              <div className="bg-rose-50 border border-rose-100 text-rose-600 text-xs px-4 py-3 rounded-2xl animate-shake">
                 {error}
               </div>
             )}
 
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-                  <Mail size={14} /> Email or Phone Number
+                <label className="text-xs font-bold text-slate-500 flex items-center gap-2 uppercase tracking-wider pl-1">
+                  <Mail size={12} className="text-indigo-500" /> Email or Phone Number
                 </label>
-                <input
-                  required
-                  type="text"
-                  value={formData.email}
-                  onChange={(e) => setFormData(p => ({ ...p, email: e.target.value }))}
-                  placeholder="Email or Phone Number"
-                  className="w-full px-4 py-4 bg-white border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                />
+                <div className="relative">
+                  <input
+                    required
+                    name="email"
+                    type="text"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="Enter email or +254..."
+                    className="w-full px-5 py-4 bg-white/80 border border-slate-200/80 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-medium placeholder:text-slate-400"
+                  />
+                </div>
               </div>
+
               <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-                  <Lock size={14} /> Password
+                <label className="text-xs font-bold text-slate-500 flex items-center gap-2 uppercase tracking-wider pl-1">
+                  <Lock size={12} className="text-indigo-500" /> Password
                 </label>
-                <input
-                  required
-                  type="password"
-                  value={formData.password}
-                  onChange={(e) => setFormData(p => ({ ...p, password: e.target.value }))}
-                  placeholder="••••••••"
-                  className="w-full px-4 py-4 bg-white border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                />
+                <div className="relative">
+                  <input
+                    required
+                    name="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    placeholder="••••••••"
+                    className="w-full px-5 py-4 bg-white/80 border border-slate-200/80 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-medium placeholder:text-slate-400"
+                  />
+                </div>
               </div>
             </div>
 
-            <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
-                <span className="text-slate-600 font-medium">Remember me</span>
+            <div className="flex items-center justify-between text-xs font-medium">
+              <label className="flex items-center gap-2 cursor-pointer group">
+                <input 
+                  type="checkbox" 
+                  className="w-4 h-4 rounded-lg border-slate-300 text-indigo-600 focus:ring-indigo-500/30 accent-indigo-600 transition-colors" 
+                />
+                <span className="text-slate-500 group-hover:text-slate-700 transition-colors">Remember me</span>
               </label>
-              <button type="button" className="text-blue-600 font-semibold hover:text-blue-700 transition-colors">
-                Forgot password?
+              <button type="button" className="text-indigo-600 font-bold hover:text-indigo-700 transition-colors pl-1">
+                Need Help?
               </button>
             </div>
 
-            <button disabled={isLoggingIn} className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl shadow-lg shadow-blue-100 flex items-center justify-center gap-2 transition-all disabled:opacity-60">
-              {isLoggingIn ? 'Signing in...' : <>Sign In <ArrowRight size={20} /></>}
+            <button 
+              type="submit"
+              disabled={isLoggingIn || isContextLoading} 
+              className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl shadow-lg shadow-indigo-500/10 hover:shadow-indigo-500/20 hover:scale-[1.01] flex items-center justify-center gap-2 transition-all duration-300 disabled:opacity-60 disabled:pointer-events-none"
+            >
+              {isLoggingIn || isContextLoading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span>Connecting to Portal...</span>
+                </>
+              ) : (
+                <>
+                  <span>Sign In to Learn</span> 
+                  <ArrowRight size={18} />
+                </>
+              )}
             </button>
             
-            <div className="pt-6 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-              <div className="flex items-center gap-1"><ShieldCheck size={12} /> Secure Access</div>
-              <div className="flex items-center gap-1"><Clock size={12} /> System v4.0.2</div>
+            {/* Dev Sandboxing Bypass Tip */}
+            <div className="pt-6 mt-4 border-t border-slate-100/80 flex items-center justify-between text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+              <div className="flex items-center gap-1"><ShieldCheck size={12} className="text-emerald-500" /> CBC Secured</div>
+              <div className="flex items-center gap-1.5 text-indigo-500/70"><Cpu size={12} /> Sandbox Enabled</div>
             </div>
           </form>
         </div>
         
-        <p className="text-center text-slate-400 text-xs mt-8">
+        <p className="text-center text-slate-400 text-xs mt-8 font-medium">
           SomoBloom School Management System • {new Date().getFullYear()}
         </p>
       </div>
