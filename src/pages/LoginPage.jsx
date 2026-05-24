@@ -113,18 +113,7 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between text-xs font-medium">
-              <label className="flex items-center gap-2 cursor-pointer group">
-                <input 
-                  type="checkbox" 
-                  className="w-4 h-4 rounded-lg border-slate-300 text-indigo-600 focus:ring-indigo-500/30 accent-indigo-600 transition-colors" 
-                />
-                <span className="text-slate-500 group-hover:text-slate-700 transition-colors">Remember me</span>
-              </label>
-              <button type="button" className="text-indigo-600 font-bold hover:text-indigo-700 transition-colors pl-1">
-                Need Help?
-              </button>
-            </div>
+
 
             <button 
               type="submit"
@@ -144,11 +133,7 @@ export default function LoginPage() {
               )}
             </button>
             
-            {/* Dev Sandboxing Bypass Tip */}
-            <div className="pt-6 mt-4 border-t border-slate-100/80 flex items-center justify-between text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-              <div className="flex items-center gap-1"><ShieldCheck size={12} className="text-emerald-500" /> CBC Secured</div>
-              <div className="flex items-center gap-1.5 text-indigo-500/70"><Cpu size={12} /> Sandbox Enabled</div>
-            </div>
+
           </form>
         </div>
         
